@@ -28,6 +28,6 @@ if __FILE__ == $0 then
   
   changes = old_processor.diff(new_processor).sort_by{|c| c.signature}
   changes.each do |change|
-    puts "#{change.signature} #{change.operation}"
+    puts change.to_s
   end
 end

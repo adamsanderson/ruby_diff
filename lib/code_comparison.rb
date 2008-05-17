@@ -1,4 +1,15 @@
-CodeChange = Struct.new(:signature, :operation)
+class CodeChange < Struct.new(:signature, :operation)
+  OPERATION_CHARS = {
+    :added   => "+",
+    :removed => "-",
+    :changed => "c",
+    :moved   => "m"   #Not used yet
+  }
+  
+  def to_s
+    "#{OPERATION_CHARS[self.operation]}  #{signature}"
+  end
+end
 
 class CodeComparison
   def initialize(old_signatures, new_signatures)
