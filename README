@@ -1,0 +1,16 @@
+= RubyDiff
+
+RubyDiff does higher level comparisons of ruby code.
+
+When looking at large sets of changes between versions of files, it is 
+important to get an idea of what classes, modules, and methods change.
+RubyDiff aims to reveal substantive changes to code, and let you ignore
+trivial changes like whitespace being added to a document.
+
+== Requirements
+RubyDiff depends on ParseTree, the easiest way to get it is via ruby gems:
+  ruby gem install parse_tree
+  
+== Caveats
+This is just the beginnings of an experiment, so all that is captured are
+changes to instance methods.  The API is likely to change drastically.
