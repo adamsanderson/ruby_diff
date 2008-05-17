@@ -14,3 +14,15 @@ RubyDiff depends on ParseTree, the easiest way to get it is via ruby gems:
 == Caveats
 This is just the beginnings of an experiment, so all that is captured are
 changes to instance methods.  The API is likely to change drastically.
+
+== Usage
+This is likely to change a bunch, but for the moment:
+  ruby ruby_diff.rb old_file new_file
+Or for git repositories
+  ruby ruby_diff.rb --git old_revision new_revision path
+  
+== Contact
+Feel free to get in touch with me:
+  netghost@gmail.com
+Or check out the GitHub repository at:
+  http://github.com/adamsanderson/ruby_diff/tree/master
