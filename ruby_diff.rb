@@ -5,6 +5,7 @@ require 'parse_tree'
 require 'sexp_processor'
 require 'unified_ruby'
 require 'set'
+require 'pp'
 require 'lib/structure_processor'
 require 'lib/code_comparison'
 
@@ -24,6 +25,8 @@ if __FILE__ == $0 then
   opts = OptionParser.new 
   opts.on('-v', '--version')    { puts "ruby_diff v:0" ; exit 0 }
   opts.on('-h', '--help')       { puts "Help is on the way" }
+  
+  opts.on('--sexp')             { @options[:sexp] = true }
   
   opts.on('--git')              { @options[:mode] = :git }
   opts.on('--file')             { @options[:mode] = :file }
@@ -48,6 +51,13 @@ if __FILE__ == $0 then
   
   sexp1 = ParseTree.new.parse_tree_for_string(source1, file1)
   sexp2 = ParseTree.new.parse_tree_for_string(source2, file2)
+  
+  if @options[:sexp]
+    puts "---Old---"
+    pp sexp1
+    puts "---New---"
+    pp sexp2
+  end
   
   # TODO: this returns the sexp, NOT what we want
   old_processor = StructureProcessor.new
