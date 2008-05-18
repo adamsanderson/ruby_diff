@@ -59,7 +59,6 @@ if __FILE__ == $0 then
     pp sexp2
   end
   
-  # TODO: this returns the sexp, NOT what we want
   old_processor = StructureProcessor.new
   old_processor.process(*sexp1)
   new_processor = StructureProcessor.new

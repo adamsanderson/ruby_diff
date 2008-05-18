@@ -16,7 +16,7 @@ class MethodSignuature
   end
   
   # The following are all just to quickly get hashing right
-  # TODO: replace with real methods
+  # TODO: replace with real found_methods
   def hash
     self.to_s.hash
   end
@@ -35,7 +35,7 @@ class MethodSignuature
 end
 
 class StructureProcessor < SexpProcessor
-  attr_accessor :instance_methods
+  attr_accessor :found_methods
   
   def initialize
     super
@@ -43,7 +43,8 @@ class StructureProcessor < SexpProcessor
     self.auto_shift_type = true
     @classes = []
     @modules = []
-    @instance_methods = {}
+    @instance_scope = true
+    @found_methods = {}
   end
   
   def process_class(exp)
@@ -70,14 +71,34 @@ class StructureProcessor < SexpProcessor
     args = process exp.shift
     body = process exp.shift
 
-    #signature = "#{[@hierarchy].join('::')}##{name}"
-    signature = MethodSignuature.new(name, @classes, @modules, true)
-    @instance_methods[signature] = {:name=>name, :args=>args, :body=>body}
+    signature = MethodSignuature.new(name, @classes, @modules, @instance_scope)
+    @found_methods[signature] = {:name=>name, :args=>args, :body=>body}
     
     return s(:defn, name, args, body)
   end
   
+  def process_defs(exp)
+    
+    scope = process exp.shift
+    name = exp.shift
+    args = process exp.shift
+    body = process exp.shift
+
+    signature = MethodSignuature.new(name, @classes, @modules, false)
+    @found_methods[signature] = {:name=>name, :args=>args, :body=>body}
+    
+    return s(:defs, scope, name, args, body)
+  end
+  
+  def process_sclass(exp)
+    @instance_scope = false
+    scope = process exp.shift
+    body = process exp.shift
+    @instance_scope = true
+    return s(:sclass, scope, body)
+  end
+  
   def diff(other_processor)
-    instance_method_diff = CodeComparison.new(self.instance_methods, other_processor.instance_methods).changes
+    method_diff = CodeComparison.new(self.found_methods, other_processor.found_methods).changes
   end
 end
