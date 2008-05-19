@@ -1,13 +1,17 @@
 #!/usr/bin/env ruby 
 
 require 'rubygems'
+# ParseTree
 require 'parse_tree'
 require 'sexp_processor'
 require 'unified_ruby'
+# Standard library
 require 'set'
 require 'pp'
-require 'lib/structure_processor'
-require 'lib/code_comparison'
+# RubyDiff
+%w(code_comparison structure_processor).each do |name|
+  require File.expand_path(File.dirname(__FILE__) + "/lib/#{name}")
+end
 
 class Unifier < SexpProcessor
   include UnifiedRuby
