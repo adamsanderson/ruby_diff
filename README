@@ -9,7 +9,7 @@ trivial changes like whitespace being added to a document.
 
 == Requirements
 RubyDiff depends on ParseTree, the easiest way to get it is via ruby gems:
-  gem install parse_tree
+  gem install ParseTree
   
 == Caveats
 This is just the beginnings of an experiment, so all that is captured are

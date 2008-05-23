@@ -1,15 +1,19 @@
 #!/usr/bin/env ruby 
 
 require 'rubygems'
+
 # ParseTree
 require 'parse_tree'
 require 'sexp_processor'
 require 'unified_ruby'
+require 'fileutils'
+
 # Standard library
 require 'set'
 require 'pp'
+
 # RubyDiff
-%w(code_comparison structure_processor).each do |name|
+%w(code_comparison structure_processor file_feeder git_feeder).each do |name|
   require File.expand_path(File.dirname(__FILE__) + "/lib/#{name}")
 end
 
@@ -26,47 +30,63 @@ if __FILE__ == $0 then
     :mode=>:file
   }
   
-  opts = OptionParser.new 
-  opts.on('-v', '--version')    { puts "ruby_diff v:0" ; exit 0 }
-  opts.on('-h', '--help')       { puts "Help is on the way" }
+  feeder_mapping = {
+    :file =>  FileFeeder,
+    :git  =>  GitFeeder
+  }
   
-  opts.on('--sexp')             { @options[:sexp] = true }
+  feeders = []
   
-  opts.on('--git')              { @options[:mode] = :git }
-  opts.on('--file')             { @options[:mode] = :file }
+  opts = OptionParser.new   
+  opts.on('--sexp', "Show the s expressions for each input"){ 
+    @options[:sexp] = true 
+  }
   
-  # TO DO - add additional options
+  opts.on('--git PATH', "Use a git repository as a code source"){|path| 
+    feeders << feeder_mapping[:git].new(path) 
+  }
+  opts.on('--file PATH', "Use a file system path as a code source"){|path| 
+    feeders << feeder_mapping[:file].new(path) 
+  }
+  
+  opts.on_tail('-v', '--version')    { puts "ruby_diff v:0" ; exit }
+  opts.on_tail('-h', '--help')       { puts opts; exit }
+  
   opts.parse!(ARGV)
   
-  if @options[:mode] == :git
-    rev1 = ARGV.shift
-    rev2 = ARGV.shift
-    path = ARGV.shift
-    
-    # "git show HEAD~1:lib/code_comparison.rb"
-    source1 = `git show #{rev1}:#{path}`
-    source2 = `git show #{rev2}:#{path}`
-  else 
-    file1 = ARGV.shift
-    file2 = ARGV.shift
-    source1 = open(file1, 'r').read()
-    source2 = open(file2, 'r').read()
-  end 
-  
-  sexp1 = ParseTree.new.parse_tree_for_string(source1, file1)
-  sexp2 = ParseTree.new.parse_tree_for_string(source2, file2)
-  
-  if @options[:sexp]
-    puts "---Old---"
-    pp sexp1
-    puts "---New---"
-    pp sexp2
+  # Map remaining options as file feeders
+  ARGV.each do |path|
+    feeders << feeder_mapping[:file].new(path)
   end
   
-  old_processor = StructureProcessor.new
-  old_processor.process(*sexp1)
-  new_processor = StructureProcessor.new
-  new_processor.process(*sexp2)
+  if feeders.length > 2
+    puts opts
+    puts "Too many code sources (#{feeders.length})"
+    exit 1
+  elsif feeders.length < 2
+    puts opts
+    puts "Must supply least 2 code sources (#{feeders.length})"
+    exit 1
+  end
+  
+  processors = feeders.map do |feeder|
+    puts "#{feeder.class}: #{feeder.path}" if @options[:sexp]
+    processor = StructureProcessor.new
+    feeder.each do |code|
+      sexp = ParseTree.new.parse_tree_for_string(code)
+      if @options[:sexp]
+        pp sexp
+        puts "--"
+      end
+      
+      processor.process *sexp
+    end
+    
+    processor
+  end
+  
+   
+  old_processor, new_processor = *processors
   
   changes = old_processor.diff(new_processor).sort_by{|c| c.signature}
   changes.each do |change|
