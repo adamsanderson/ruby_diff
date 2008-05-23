@@ -17,10 +17,12 @@ changes to instance methods.  The API is likely to change drastically.
 
 == Usage
 This is likely to change a bunch, but for the moment:
-  ruby ruby_diff.rb old_file new_file
-Or for git repositories
-  ruby ruby_diff.rb --git old_revision new_revision path
-  
+  ruby_diff.rb old_file new_file
+Or for git repositories, etc.
+  ruby_diff.rb --git HEAD --file ./
+
+See help for more information.
+
 == Contact
 Feel free to get in touch with me:
   netghost@gmail.com

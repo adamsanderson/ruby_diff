@@ -38,6 +38,21 @@ if __FILE__ == $0 then
   feeders = []
   
   opts = OptionParser.new   
+  opts.banner = "Usage: ruby_diff.rb [options]"
+  
+  opts.separator ""
+  opts.separator "Specific options:"
+  
+  opts.define_head <<-HEAD
+  
+Examples:
+Changes between git HEAD and current file system:
+  ruby_diff.rb --git HEAD --file ./
+
+Changes between HEAD and previous revision:
+  ruby_diff.rb --git HEAD~1 --git HEAD
+HEAD
+  
   opts.on('--sexp', "Show the s expressions for each input"){ 
     @options[:sexp] = true 
   }
