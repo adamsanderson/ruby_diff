@@ -18,7 +18,8 @@ class GitFeeder
     @files = []
           
     FileUtils.cd(@working_dir) do
-      git_list = `git-ls-tree -r #{rev}`
+      git_list = git "git-ls-tree -r #{rev}"
+      
       git_list.each_line do |line|
         file = GitFile.new(*line.chomp.split(/\s+/,4))
         
@@ -33,7 +34,8 @@ class GitFeeder
   def each
     FileUtils.cd(@working_dir) do
       @files.each do |file|
-        yield(`git-show #{file.hash}`)      
+        code = git "git-show #{file.hash}"
+        yield(code)      
       end
     end
   end
@@ -54,6 +56,14 @@ class GitFeeder
         init_git(next_path, next_search)
       end
     end
+  end
+  
+  def git command
+    output = `#{command} 2>&1`.chomp
+    unless $?.success?
+      raise RuntimeError, output
+    end
+    output
   end
   
 end

@@ -94,7 +94,7 @@ HEAD
         puts "--"
       end
       
-      processor.process *sexp
+      processor.process(*sexp)
     end
     
     processor

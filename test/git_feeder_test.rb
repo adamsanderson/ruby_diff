@@ -30,8 +30,9 @@ class GitFeederTestCase < Test::Unit::TestCase
   
   def test_revsision_required
     assert_raise RuntimeError do
-      GitFeeder.new GIT_REPO
+      GitFeeder.new "hello"
     end
   end
+  
   
 end
