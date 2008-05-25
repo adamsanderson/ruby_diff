@@ -12,6 +12,12 @@ class GitFeederTestCase < Test::Unit::TestCase
     assert_equal 2, feeder.files.length
   end
   
+  def test_find_single_file
+    assert File.exist?(GIT_REPO)
+    feeder = GitFeeder.new(File.join("HEAD:#{GIT_REPO}",'lib','chapter.rb'))
+    assert_equal 1, feeder.files.length
+  end
+  
   def test_find_files_in_sub_dir
     feeder = GitFeeder.new(File.join("HEAD:#{GIT_REPO}",'lib'))
     assert_equal 1, feeder.files.length

@@ -14,12 +14,20 @@ class GitFeeder
     raise ArgumentError.new("Must supply a git revision") unless rev
     path = File.expand_path(path) if path
     init_git(path || '.')
-    @file_pattern = (@search_path == '') ? "**.rb" : File.join(@search_path,"**.rb")
+    @file_pattern = if @search_path == ''
+      "**.rb"
+    elsif @search_path =~ /\.rb#{File::SEPARATOR}$/
+      # So appending each piece into the search path during init_git
+      # causes the search path to always end with a /
+      @search_path[0...-1]
+    else
+      File.join(@search_path,"**.rb")
+    end
+    
     @files = []
           
     FileUtils.cd(@working_dir) do
       git_list = git "git-ls-tree -r #{rev}"
-      
       git_list.each_line do |line|
         file = GitFile.new(*line.chomp.split(/\s+/,4))
         

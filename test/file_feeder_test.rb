@@ -12,6 +12,12 @@ class FileFeederTestCase < Test::Unit::TestCase
     assert_equal 2, feeder.files.length
   end
   
+  def test_find_single_file
+    assert File.exist?(DIR)
+    feeder = FileFeeder.new(File.join(DIR,'lib','chapter.rb'))
+    assert_equal 1, feeder.files.length
+  end
+  
   def test_find_files_in_sub_dir
     feeder = FileFeeder.new(File.join(DIR,'lib'))
     assert_equal 1, feeder.files.length
