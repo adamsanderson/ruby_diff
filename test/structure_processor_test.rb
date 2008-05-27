@@ -63,12 +63,12 @@ class StructureProcessorTestCase < Test::Unit::TestCase
     CODE
   end
   
-  def assert_signatures(code, signatures)
+  def assert_signatures(code, signatures, types=[MethodCode])
     sexp = ParseTree.new.parse_tree_for_string(code)
     processor = StructureProcessor.new()
     processor.process(* sexp)
     
-    found_signatures = processor.found_methods.keys.map{|key| key.to_s }.sort
+    found_signatures = processor.code_objects.values.select{|co| types.include?(co.class)}.map{|key| key.signature }.sort
     assert_equal signatures.sort, found_signatures
   end
   
