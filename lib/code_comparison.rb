@@ -1,10 +1,18 @@
-class CodeChange < Struct.new(:signature, :operation)
+class CodeChange
+  attr_reader :signature
+  attr_reader :operation
+  
   OPERATION_CHARS = {
     :added   => "+",
     :removed => "-",
     :changed => "c",
     :moved   => "m"   #Not used yet
   }
+  
+  def initialize(signature, operation)
+    @signature = signature
+    @operation = operation
+  end
   
   def to_s
     "#{OPERATION_CHARS[self.operation]}  #{signature}"
