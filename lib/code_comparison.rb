@@ -13,11 +13,13 @@ class CodeChange
   def initialize(signature, operation, changes=[])
     @signature = signature
     @operation = operation
-    @changes   = []
+    @changes   = changes
   end
   
-  def to_s
-    "#{OPERATION_CHARS[self.operation]}  #{signature}"
+  def to_s(depth=1)
+    this_change = "#{OPERATION_CHARS[self.operation]}#{"  "*depth}#{signature}"
+    sub_changes = changes.map{|c| c.to_s(depth+1)}
+    [this_change, sub_changes].flatten.join("\n")
   end
 end
 
@@ -60,6 +62,9 @@ protected
   end
   
   def changed(old_sig, old_code_object, new_sig, new_code_object)
-    CodeChange.new(old_sig, :changed)
+    CodeChange.new(old_sig, :changed, CodeComparison.new(
+      old_code_object.child_signatures,
+      new_code_object.child_signatures
+    ).changes)
   end
 end

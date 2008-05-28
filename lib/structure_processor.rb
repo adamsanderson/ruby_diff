@@ -18,6 +18,12 @@ class CodeObject
     self.name
   end
   
+  def child_signatures
+    h = {}
+    self.children.each{|c| h[c.signature] = c}
+    h
+  end
+  
   def to_s
     signature
   end
@@ -115,7 +121,7 @@ class StructureProcessor < SexpProcessor
   end
   
   def diff(other_processor)
-    method_diff = CodeComparison.new(self.code_objects, other_processor.code_objects).changes
+    method_diff = CodeComparison.new(self.root_objects, other_processor.root_objects).changes
   end
   
   protected
