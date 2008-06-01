@@ -14,5 +14,5 @@ require 'pp'
 
 # RubyDiff
 %w(code_comparison structure_processor file_feeder git_feeder).each do |name|
-  require File.expand_path(File.dirname(__FILE__) + "/lib/#{name}")
+  require File.expand_path(File.dirname(__FILE__) + "/ruby_diff/#{name}")
 end

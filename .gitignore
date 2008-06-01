@@ -1,1 +1,6 @@
+# Ignore gedit backup files
 *~
+# Ignore rubygems pkg dir
+/pkg
+# Ignore MacOSX .DS_Store
+.DS_Store

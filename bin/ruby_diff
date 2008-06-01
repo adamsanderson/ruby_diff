@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-require File.join(File.dirname(__FILE__), '..', 'ruby_diff')
-
+require 'rubygems'
+require 'ruby_diff'
 require 'optparse' 
 
 @options = {}

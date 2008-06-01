@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'test/unit/testcase'
-require File.expand_path(File.dirname(__FILE__) + "/../ruby_diff")
+require "ruby_diff"
 
 GIT_REPO = File.join(File.dirname(__FILE__), "git_sample")
 
