@@ -1,4 +1,6 @@
 .gitignore
+History.txt
+Manifest.txt
 README.txt
 Rakefile
 bin/ruby_diff

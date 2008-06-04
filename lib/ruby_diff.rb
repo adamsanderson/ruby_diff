@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby 
-
 require 'rubygems'
 
 # ParseTree
@@ -11,6 +9,10 @@ require 'fileutils'
 # Standard library
 require 'set'
 require 'pp'
+
+module RubyDiff
+  VERSION = "0.1"
+end
 
 # RubyDiff
 %w(code_comparison structure_processor file_feeder git_feeder).each do |name|

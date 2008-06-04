@@ -1,47 +1,65 @@
-require 'rake'
-require 'rake/testtask'
-require 'rake/gempackagetask'
-require 'rake/rdoctask'
+require 'rubygems'
+require 'hoe'
+require './lib/ruby_diff.rb'
 
 task :default => "git:changed"
+task :release => "git:push"
 
-# Lifted from hpricot, because I figure _why has it figured out
-NAME = "ruby_diff"
-VERS = "0.1"
-PKG_FILES = %w(README Rakefile) +
-      Dir.glob("{bin,doc,test,lib,extras}/**/*")
-
-SPEC =
-  Gem::Specification.new do |s|
-    s.name = NAME
-    s.version = VERS
-    s.platform = Gem::Platform::RUBY
-    s.has_rdoc = true
-    s.extra_rdoc_files = ["README"]
-    s.summary = "a higher level diff application for analyzing changes to ruby code"
-    s.description = s.summary
-    s.author = "Adam Sanderson"
-    s.email = 'netghost@gmail.com'
-    s.homepage = 'http://endofline.wordpress.com'
-    s.files = PKG_FILES
-    s.executables << 'ruby_diff'
-    s.add_dependency 'ParseTree'
-  end
-
-
-
-desc "Run tests"
-Rake::TestTask.new("test") do |t|
-  t.pattern = 'test/*_test.rb'
-  t.verbose = false
-  t.warning = true
+HOE = Hoe.new('ruby_diff', RubyDiff::VERSION) do |p|
+  p.rubyforge_name = 'rubydiff'
+  p.developer('Adam Sanderson', 'netghost@gmail.com')
+  p.remote_rdoc_dir = '' # Release to root
+  p.test_globs = ['test/*_test.rb']
+  p.summary = "a higher level diff application for analyzing changes to ruby code"
+  p.extra_deps << ['ParseTree', '>= 2.0.2']
 end
+SPEC = HOE.spec
+
+
+# Add some more dependencies to packaging:
+task :package => ['git:update_manifest','git:update_manifest']
 
 desc "Shows what has changed since the last commit"
 namespace :git do
   task :changed do |t|
+    _divider
+    puts "Changes since last commit:"
     puts `./bin/ruby_diff --git HEAD --file ./`
+    _divider
+  end
+   
+  desc "Updates the manifest to match the git repository"
+  task :update_manifest do |t|
+    `git-ls-files > Manifest.txt`
+  end
+  
+  desc "Pushes git repository out"
+  task :push do |t|
+    ['origin', 'rubyforge'].each do |source|
+      puts "Pushing to #{source}..."
+      puts `git push #{source}`
+    end
+  end
+  
+end
+
+desc "Exports the gemspec for this project"
+task :gemspec do |t|
+  open("ruby_diff.gemspec",'w'){|io| io << SPEC.to_ruby}
+end
+
+namespace :github do
+  desc "Simulates loading the Gem on GitHub"
+  task :simulate_gem => :gemspec do |t|
+    require 'rubygems/specification'
+    data = File.read('ruby_diff.gemspec')
+    spec = nil
+    Thread.new { spec = eval("$SAFE = 3\n#{data}") }.join
+    puts spec
   end
 end
 
-Rake::GemPackageTask.new(SPEC) do |pkg| end
+private
+def _divider
+  puts "-"*(ENV['COLUMNS'] || 80).to_i
+end
