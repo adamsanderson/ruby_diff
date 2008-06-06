@@ -49,6 +49,7 @@ class GitFeeder
   end
     
   def init_git(path, search_path='')
+    path = File.expand_path(path)
     if File.exist?(File.join(path, ".git"))
       # If this is the git repository
       @working_dir = path
