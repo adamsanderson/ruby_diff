@@ -4,7 +4,7 @@ class CodeObject
   attr_reader :children
   attr_reader :sexp
   
-  def initialize(name, parent, sexp)
+  def initialize(name, parent=nil, sexp=Sexp.new)
     @name = name
     @parent = parent
     @sexp = sexp.deep_clone
