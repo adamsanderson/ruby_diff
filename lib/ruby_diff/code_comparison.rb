@@ -38,6 +38,10 @@ class CodeComparison
         if code_object != other_code_object
           changes << changed(sig, code_object, sig, other_code_object)
         end
+      elsif other_code_object = @new.values.find{|obj| obj.sexp == code_object.sexp}
+        new_sig = @new.invert[other_code_object]
+        changes << moved(sig, code_object, new_sig, other_code_object)
+        seen << new_sig
       else
         changes << removal(sig, code_object)
       end
@@ -63,6 +67,13 @@ protected
   
   def changed(old_sig, old_code_object, new_sig, new_code_object)
     CodeChange.new(old_sig, :changed, CodeComparison.new(
+      old_code_object.child_signatures,
+      new_code_object.child_signatures
+    ).changes)
+  end
+  
+  def moved(old_sig, old_code_object, new_sig, new_code_object)
+    CodeChange.new("#{old_sig} => #{new_sig}", :moved, CodeComparison.new(
       old_code_object.child_signatures,
       new_code_object.child_signatures
     ).changes)
