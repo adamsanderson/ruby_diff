@@ -1,7 +1,18 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'ruby_diff'
 require 'optparse' 
+
+# If we're loading ruby_diff directly for development,
+# don't require it through rubygems.  Is there a better
+# way to do this?
+
+if $0 == __FILE__
+  # loaded directly (dev)
+  require File.dirname(__FILE__)+"/../lib/ruby_diff"
+else
+  # loaded via ruby_gems
+  require 'ruby_diff'
+end
 
 @options = {}
 
