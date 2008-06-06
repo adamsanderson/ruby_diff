@@ -27,7 +27,7 @@ class GitFeeder
     @files = []
           
     FileUtils.cd(@working_dir) do
-      git_list = git "git-ls-tree -r #{rev}"
+      git_list = git "ls-tree -r #{rev}"
       git_list.each_line do |line|
         file = GitFile.new(*line.chomp.split(/\s+/,4))
         
@@ -42,7 +42,7 @@ class GitFeeder
   def each
     FileUtils.cd(@working_dir) do
       @files.each do |file|
-        code = git "git-show #{file.hash}"
+        code = git "show #{file.hash}"
         yield(code)      
       end
     end
@@ -56,7 +56,7 @@ class GitFeeder
       @search_path = search_path
       
     else
-      next_search = File.join( File.split(path).last, search_path )
+      next_search = File.join( File.basename(path), search_path )
       next_path = File.dirname(path)
       
       if next_path == path # We have reached the root, and can go no further
@@ -68,7 +68,7 @@ class GitFeeder
   end
   
   def git command
-    output = `#{command} 2>&1`.chomp
+    output = `git #{command} 2>&1`.chomp
     unless $?.success?
       raise RuntimeError, output
     end
