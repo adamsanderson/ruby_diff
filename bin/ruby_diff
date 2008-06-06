@@ -74,13 +74,17 @@ processors = feeders.map do |feeder|
   puts "#{feeder.class}: #{feeder.path}" if @options[:sexp]
   processor = StructureProcessor.new
   feeder.each do |code|
-    sexp = ParseTree.new.parse_tree_for_string(code)
-    if @options[:sexp]
-      pp sexp
-      puts "--"
-    end
+    begin
+      sexp = ParseTree.new.parse_tree_for_string(code)
+      if @options[:sexp]
+        pp sexp
+        puts "--"
+      end
     
-    processor.process(*sexp)
+      processor.process(*sexp) unless sexp.empty?
+    rescue Exception => ex
+      STDERR << "Could not parse input: #{ex}"
+    end
   end
   
   processor

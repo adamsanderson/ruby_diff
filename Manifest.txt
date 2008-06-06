@@ -11,6 +11,7 @@ lib/ruby_diff/git_feeder.rb
 lib/ruby_diff/patterns.rb
 lib/ruby_diff/structure_processor.rb
 ruby_diff.gemspec
+test/code_comparison_test.rb
 test/file_feeder_test.rb
 test/git_feeder_test.rb
 test/git_sample/README
