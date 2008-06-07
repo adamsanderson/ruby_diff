@@ -57,13 +57,15 @@ class MethodCode < CodeObject
 end
 
 class StructureProcessor < SexpProcessor
+  attr_reader   :name
   attr_accessor :code_objects
   attr_accessor :root_objects
   
   attr_accessor :scope_stack
   
-  def initialize
-    super
+  def initialize(name='')
+    super()
+    @name = name
     self.strict = false
     self.auto_shift_type = true
     

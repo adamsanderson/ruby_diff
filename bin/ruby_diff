@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'optparse' 
+require 'optparse'
+require 'enumerator'
 
 # If we're loading ruby_diff directly for development,
 # don't require it through rubygems.  Is there a better
@@ -60,19 +61,15 @@ ARGV.each do |path|
   feeders << feeder_mapping[:file].new(path)
 end
 
-if feeders.length > 2
+if feeders.length < 2
   puts opts
-  puts "Too many code sources (#{feeders.length})"
-  exit 1
-elsif feeders.length < 2
-  puts opts
-  puts "Must supply least 2 code sources (#{feeders.length})"
+  puts "Must supply at least 2 code sources (found #{feeders.length})"
   exit 1
 end
 
 processors = feeders.map do |feeder|
   puts "#{feeder.class}: #{feeder.path}" if @options[:sexp]
-  processor = StructureProcessor.new
+  processor = StructureProcessor.new(feeder.path)
   feeder.each do |code|
     begin
       sexp = ParseTree.new.parse_tree_for_string(code)
@@ -90,10 +87,13 @@ processors = feeders.map do |feeder|
   processor
 end
 
- 
-old_processor, new_processor = *processors
 
-changes = old_processor.diff(new_processor).sort_by{|c| c.signature}
-changes.each do |change|
-  puts change.to_s
+processors.each_cons(2) do |old_processor, new_processor|
+  if processors.length > 2
+    puts "# #{old_processor.name} to #{new_processor.name}"
+  end
+  changes = old_processor.diff(new_processor).sort_by{|c| c.signature}
+  changes.each do |change|
+    puts change.to_s
+  end
 end
