@@ -65,7 +65,7 @@ class MetaCode < CodeObject
   
   def signature
     parent_signature = self.parent ? self.parent.signature : ""
-    [parent_signature,self.name,@label].join(" ")
+    "#{parent_signature} {#{@label} #{self.name}}"
   end
 end
 

@@ -63,6 +63,22 @@ class StructureProcessorTestCase < Test::Unit::TestCase
     CODE
   end
   
+  def test_reader_attribute
+    assert_signatures <<-CODE, ["A {reader b}"], [MetaCode]
+      class A
+        attr_reader :b
+      end
+    CODE
+  end
+  
+  def test_multiple_writer_attributes
+    assert_signatures <<-CODE, ["A {writer b}", "A {writer c}"], [MetaCode]
+      class A
+        attr_writer :b, 'c'
+      end
+    CODE
+  end
+  
   def assert_signatures(code, signatures, types=[MethodCode])
     sexp = ParseTree.new.parse_tree_for_string(code)
     processor = StructureProcessor.new()
