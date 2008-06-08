@@ -40,8 +40,12 @@ Changes between HEAD and previous revision:
 ruby_diff --git HEAD~1 --git HEAD
 HEAD
 
-opts.on('--sexp', "Show the s expressions for each input"){ 
+opts.on('--sexp', "Show the s expressions for each input (mostly for debugging)"){ 
   @options[:sexp] = true 
+}
+
+opts.on('--verbose', "Shows more information while processing files"){ 
+  @options[:verbose] = true 
 }
 
 opts.on('--git PATH', "Use a git repository as a code source"){|path| 
@@ -70,9 +74,12 @@ end
 processors = feeders.map do |feeder|
   puts "#{feeder.class}: #{feeder.path}" if @options[:sexp]
   processor = StructureProcessor.new(feeder.path)
-  feeder.each do |code|
+  puts "\n#{feeder.path}" if @options[:verbose]
+  
+  feeder.each do |code, path|
+    puts path if @options[:verbose]
     begin
-      sexp = ParseTree.new.parse_tree_for_string(code)
+      sexp = ParseTree.new.parse_tree_for_string(code,path)
       if @options[:sexp]
         pp sexp
         puts "--"
@@ -80,7 +87,7 @@ processors = feeders.map do |feeder|
     
       processor.process(*sexp) unless sexp.empty?
     rescue Exception => ex
-      STDERR << "Could not parse input: #{ex}"
+      STDERR << "Could not parse input (#{path}):\n#{ex}"
     end
   end
   
@@ -89,7 +96,7 @@ end
 
 
 processors.each_cons(2) do |old_processor, new_processor|
-  if processors.length > 2
+  if processors.length > 2 or @options[:verbose]
     puts "# #{old_processor.name} to #{new_processor.name}"
   end
   changes = old_processor.diff(new_processor).sort_by{|c| c.signature}

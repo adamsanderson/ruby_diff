@@ -26,7 +26,7 @@ class GitFeederTestCase < Test::Unit::TestCase
   def test_files_are_suitable_for_processing
     feeder = GitFeeder.new "HEAD:#{GIT_REPO}"
     assert_nothing_raised do
-      sexps = feeder.map{|code| ParseTree.new.parse_tree_for_string(code)}
+      sexps = feeder.map{|code,name| ParseTree.new.parse_tree_for_string(code)}
 
       sexps.each do |sexp|
         assert sexp.length > 0, "Parsed code should not be empty"

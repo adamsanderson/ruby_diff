@@ -21,7 +21,7 @@ class FileFeeder
     
   def each
     @files.each do |file|
-      yield(open(file, 'r'){|io| io.read})      
+      yield(open(file, 'r'){|io| io.read}, file)      
     end
   end
 

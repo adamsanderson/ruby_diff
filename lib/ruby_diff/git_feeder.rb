@@ -43,7 +43,7 @@ class GitFeeder
     FileUtils.cd(@working_dir) do
       @files.each do |file|
         code = git "show #{file.hash}"
-        yield(code)      
+        yield(code, file.name)      
       end
     end
   end
