@@ -56,12 +56,51 @@ class MethodCode < CodeObject
   end
 end
 
+# Meta method support
+class MetaCode < CodeObject
+  def initialize(name, parent, label, sexp=s() )
+    super(name, parent, sexp)
+    @label = label
+  end
+  
+  def signature
+    parent_signature = self.parent ? self.parent.signature : ""
+    [parent_signature,self.name,@label].join(" ")
+  end
+end
+
+class AccessorHandler  
+  def initialize(label)
+    @label = label
+  end
+  
+  def meta_codes(args_sexp, scope)
+    meta_codes = []
+    args_sexp.sexp_body.each do |arg| 
+      if name = name_for_arg(arg)
+        meta_codes << MetaCode.new(name, scope, @label)
+      end
+    end
+    meta_codes
+  end
+  
+  def name_for_arg(name_sexp)
+    identifier = name_sexp.to_a
+    case identifier.first
+      when :lit then identifier.last
+      when :str then identifier.last.to_sym
+      else nil
+    end
+  end
+end
+
 class StructureProcessor < SexpProcessor
   attr_reader   :name
   attr_accessor :code_objects
   attr_accessor :root_objects
   
   attr_accessor :scope_stack
+  attr_reader   :meta_methods
   
   def initialize(name='')
     super()
@@ -73,6 +112,11 @@ class StructureProcessor < SexpProcessor
     @code_objects = {}
     @root_objects = {}
     @scope_stack = []
+    @meta_methods = {
+      :attr_accessor => AccessorHandler.new("accessor"),
+      :attr_writer   => AccessorHandler.new("writer"),
+      :attr_reader   => AccessorHandler.new("reader")
+    }
   end
   
   def process_class(exp)
@@ -122,6 +166,18 @@ class StructureProcessor < SexpProcessor
     s(:sclass, exp_scope, body)
   end
   
+  def process_fcall(exp)
+    name = exp.shift
+    args = process exp.shift
+
+    if meta_handler = @meta_methods[name]
+      meta_codes = meta_handler.meta_codes(args, self.scope)
+      meta_codes.each{|m| record(m)}
+    end
+    
+    return s(:fcall, name, args)
+  end
+  
   def diff(other_processor)
     method_diff = CodeComparison.new(self.root_objects, other_processor.root_objects).changes
   end
@@ -143,4 +199,5 @@ class StructureProcessor < SexpProcessor
   def scope
     self.scope_stack.last
   end
+  
 end
