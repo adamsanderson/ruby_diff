@@ -8,6 +8,8 @@ lib/ruby_diff.rb
 lib/ruby_diff/code_comparison.rb
 lib/ruby_diff/file_feeder.rb
 lib/ruby_diff/git_feeder.rb
+lib/ruby_diff/git_support.rb
+lib/ruby_diff/git_working_dir_feeder.rb
 lib/ruby_diff/patterns.rb
 lib/ruby_diff/structure_processor.rb
 ruby_diff.gemspec
@@ -17,4 +19,5 @@ test/git_feeder_test.rb
 test/git_sample/README
 test/git_sample/book.rb
 test/git_sample/lib/chapter.rb
+test/git_working_dir_feeder_test.rb
 test/structure_processor_test.rb

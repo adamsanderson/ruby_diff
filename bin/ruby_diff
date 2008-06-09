@@ -62,7 +62,7 @@ opts.on('--file PATH', "Use a file system path as a code source"){|path|
   feeders << feeder_mapping[:file].new(path) 
 }
 
-opts.on_tail('-v', '--version')    { puts "ruby_diff v:0" ; exit }
+opts.on_tail('-v', '--version')    { puts "ruby_diff #{RubyDiff::VERSION}" ; exit }
 opts.on_tail('-h', '--help')       { puts opts; exit }
 
 opts.parse!(ARGV)
