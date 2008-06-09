@@ -2,5 +2,7 @@
 *~
 # Ignore rubygems pkg dir
 /pkg
+# Ignore rubygems docs dir
+/doc
 # Ignore MacOSX .DS_Store
 .DS_Store

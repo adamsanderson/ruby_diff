@@ -27,9 +27,13 @@ changes to instance methods.  The API is likely to change drastically.
 == Usage
 This is likely to change a bunch, but for the moment:
   ruby_diff old_file new_file
+  
 Or for git repositories, etc.
   ruby_diff --git HEAD --file ./
-
+  
+Compare three different release tags.
+  ruby_diff --git v0.1 --git v0.2 --git v0.3
+  
 See help for more information.
 
 == Contact
