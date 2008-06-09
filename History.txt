@@ -1,2 +1,9 @@
-=== 0.0.1 / 2008-06-03
- Initial verison of RubyDiff
+=== 0.1.5 / --
+Making everything a little better:
+- Merged changes from kballard to fix the git feeder
+- Added support for git working directory (use --git-wd)
+- Added support for multiple inputs
+- Metamethods such as 'attr_reader' are now processed
+
+=== 0.1 / 2008-06-03
+Initial verison of RubyDiff

@@ -1,4 +1,8 @@
+# Common feeder support for working with git repositories.
 module GitSupport
+
+  # Finds root of a git repository.  If the repository is the parent of the
+  # supplied path, then the remainder is made into the search path.
   def init_git(path, search_path='')
     path = File.expand_path(path)
     if File.exist?(File.join(path, ".git"))
@@ -18,6 +22,7 @@ module GitSupport
     end
   end
   
+  # issues a command to git
   def git command
     output = `git #{command} 2>&1`.chomp
     unless $?.success?

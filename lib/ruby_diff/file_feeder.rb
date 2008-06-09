@@ -1,3 +1,9 @@
+# A Feeder reads in files for RubyDiff's processor to
+# run over.  FileFeeder reads them from the file system.
+#
+# Example Usage:
+#  ruby_diff --file old_version.rb --file new_version.rb
+#  ruby_diff --file old_dir/ --file new_dir
 class FileFeeder
   attr_accessor :files
   attr_accessor :path

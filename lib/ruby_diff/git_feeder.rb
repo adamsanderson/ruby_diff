@@ -1,5 +1,12 @@
-GitFile = Struct.new :access, :type, :hash, :name
+# A Feeder reads in files for RubyDiff's processor to
+# run over.  GitFeeder reads them from a git repository.
+#
+# Example Usage:
+#  ruby_diff --git v0.1:lib --git v0.1:lib
+#  ruby_diff --git HEAD^2 --git HEAD^1 --git HEAD
 class GitFeeder
+  GitFile = Struct.new :access, :type, :hash, :name
+  
   attr_accessor :files
   attr_accessor :path
   

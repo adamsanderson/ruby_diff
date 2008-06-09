@@ -94,6 +94,9 @@ class AccessorHandler
   end
 end
 
+# StructureProcessor is a SexpProcessor which will generate a logical
+# model of the ruby code.  It can be fooled by metaprogramming and method
+# redefinition, but in most cases should be fairly accurate.
 class StructureProcessor < SexpProcessor
   attr_reader   :name
   attr_accessor :code_objects

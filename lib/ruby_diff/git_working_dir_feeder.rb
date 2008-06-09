@@ -1,3 +1,9 @@
+# A Feeder reads in files for RubyDiff's processor to
+# run over.  GitWorkingDirFeeder reads them from a git repository.  Usually 
+# used in conjunction with the GitFeeder.
+#
+# Example Usage:
+#  ruby_diff --git v0.1:lib --git-wd lib
 class GitWorkingDirFeeder
   attr_accessor :files
   attr_accessor :path

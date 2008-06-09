@@ -1,3 +1,5 @@
+# A CodeChange represents a difference between two sets of ruby
+# code.  It may contain child changes.
 class CodeChange
   attr_reader :signature
   attr_reader :operation
@@ -23,12 +25,15 @@ class CodeChange
   end
 end
 
+# Compares two sets of parsed CodeObjects.  A CodeComparison
+# Expects sets of CodeObjects hashed by their signature.
 class CodeComparison
   def initialize(old_signatures, new_signatures)
     @old = old_signatures
     @new = new_signatures
   end
   
+  # Returns the set of changes.
   def changes
     changes = []
     seen = Set.new
