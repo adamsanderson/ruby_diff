@@ -19,7 +19,8 @@ end
 
 feeder_mapping = {
   :file =>  FileFeeder,
-  :git  =>  GitFeeder
+  :git  =>  GitFeeder,
+  :git_wd  =>  GitWorkingDirFeeder,
 }
 
 feeders = []
@@ -52,6 +53,11 @@ opts.on('--verbose', "Shows more information while processing files"){
 opts.on('--git PATH', "Use a git repository as a code source"){|path| 
   feeders << feeder_mapping[:git].new(path) 
 }
+
+opts.on('--git-wd PATH', "Use the git working directory as a code source"){|path| 
+  feeders << feeder_mapping[:git_wd].new(path) 
+}
+
 opts.on('--file PATH', "Use a file system path as a code source"){|path| 
   feeders << feeder_mapping[:file].new(path) 
 }

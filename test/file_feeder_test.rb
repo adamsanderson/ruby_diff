@@ -2,9 +2,8 @@ require 'test/unit'
 require 'test/unit/testcase'
 require "ruby_diff"
 
-DIR = File.join(File.dirname(__FILE__), "git_sample")
-
 class FileFeederTestCase < Test::Unit::TestCase  
+  DIR = File.join(File.dirname(__FILE__), "git_sample")
   
   def test_find_all_files
     assert File.exist?(DIR)

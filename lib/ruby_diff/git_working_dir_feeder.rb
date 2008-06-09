@@ -1,18 +1,15 @@
-GitFile = Struct.new :access, :type, :hash, :name
-class GitFeeder
+class GitWorkingDirFeeder
   attr_accessor :files
   attr_accessor :path
   
   include Enumerable
   include GitSupport
   
-  # Expects something in the form of REV:PATH
-  #   --git REV:[PATH]
+  # Expects something in the form of PATH
+  #   --file [PATH]
   def initialize(path)
     @path = path
     
-    rev,path = path.split(":",2)
-    raise ArgumentError.new("Must supply a git revision") unless rev
     path = File.expand_path(path) if path
     init_git(path || '.')
     @file_pattern = if @search_path == ''
@@ -28,11 +25,10 @@ class GitFeeder
     @files = []
           
     FileUtils.cd(@working_dir) do
-      git_list = git "ls-tree -r #{rev}"
+      git_list = git "ls-files"
       git_list.each_line do |line|
-        file = GitFile.new(*line.chomp.split(/\s+/,4))
-        
-        if file.type == 'blob' and File.fnmatch(@file_pattern, file.name)
+        file = line.chomp
+        if File.fnmatch(@file_pattern, file)
           @files << file        
         end
       end
@@ -43,10 +39,9 @@ class GitFeeder
   def each
     FileUtils.cd(@working_dir) do
       @files.each do |file|
-        code = git "show #{file.hash}"
-        yield(code, file.name)      
+        yield(open(file, 'r'){|io| io.read}, file)      
       end
     end
   end
-  
+
 end

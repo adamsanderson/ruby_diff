@@ -24,7 +24,7 @@ namespace :git do
   task :changed do |t|
     _divider
     puts "Changes since last commit:"
-    puts `./bin/ruby_diff --git HEAD --file ./`
+    puts `./bin/ruby_diff --git HEAD --git-wd ./`
     _divider
   end
    
