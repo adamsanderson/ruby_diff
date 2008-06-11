@@ -79,6 +79,22 @@ class StructureProcessorTestCase < Test::Unit::TestCase
     CODE
   end
   
+  def test_simple_class
+    assert_signatures <<-CODE, ["A"], [ClassCode]
+      class A
+      end
+    CODE
+  end
+  
+  def test_class_in_module
+    assert_signatures <<-CODE, ["B", "B::A"], [ClassCode,ModuleCode]
+    module B
+      class A
+      end
+    end
+    CODE
+  end
+  
   def assert_signatures(code, signatures, types=[MethodCode])
     sexp = ParseTree.new.parse_tree_for_string(code)
     processor = StructureProcessor.new()
