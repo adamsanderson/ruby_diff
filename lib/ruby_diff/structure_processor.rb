@@ -124,7 +124,7 @@ class StructureProcessor < SexpProcessor
   
   def process_class(exp)
     name = exp.shift
-    super_class = exp.shift #?
+    super_class = exp.shift
     body = exp.shift
     
     record ClassCode.new(name, self.scope, body) do

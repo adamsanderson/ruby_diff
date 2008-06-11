@@ -27,10 +27,7 @@ feeder_mapping = {
 feeders = []
 
 opts = OptionParser.new   
-opts.banner = "Usage: ruby_diff.rb [options]"
-
-opts.separator ""
-opts.separator "Specific options:"
+opts.banner = "Usage: ruby_diff.rb [options] sources"
 
 opts.define_head <<-HEAD
 
@@ -40,17 +37,10 @@ ruby_diff --git HEAD --git-wd ./
 
 Changes between two sets of files:
 ruby_diff --file old_dir --file new_dir
-
 HEAD
 
-opts.on('--sexp', "Show the s expressions for each input (mostly for debugging)"){ 
-  @options[:sexp] = true 
-}
-
-opts.on('--verbose', "Shows more information while processing files"){ 
-  @options[:verbose] = true 
-}
-
+opts.separator ""
+opts.separator "Code sources:"
 opts.on('--git PATH', "Use a git repository as a code source"){|path| 
   feeders << feeder_mapping[:git].new(path) 
 }
@@ -65,6 +55,17 @@ opts.on('--svn PATH', "Use a svn repository as a code source"){|path|
 
 opts.on('--file PATH', "Use a file system path as a code source"){|path| 
   feeders << feeder_mapping[:file].new(path) 
+}
+
+
+opts.separator ""
+opts.separator "Options:"
+opts.on('--sexp', "Show the s expressions for each input (mostly for debugging)"){ 
+  @options[:sexp] = true 
+}
+
+opts.on('--verbose', "Shows more information while processing files"){ 
+  @options[:verbose] = true 
 }
 
 opts.on_tail('-v', '--version')    { puts "ruby_diff #{RubyDiff::VERSION}" ; exit }

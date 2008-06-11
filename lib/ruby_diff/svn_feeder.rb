@@ -2,8 +2,8 @@
 # run over.  FileFeeder reads them from the file system.
 #
 # Example Usage:
-#  ruby_diff --file old_version.rb --file new_version.rb
-#  ruby_diff --file old_dir/ --file new_dir
+#  ruby_diff --svn PREV:file.rb --svn new_version.rb
+#  ruby_diff --svn http://project.server.org/lib --svn .
 class SVNFeeder
   attr_accessor :files
   attr_accessor :path
@@ -14,10 +14,24 @@ class SVNFeeder
   #   --file [PATH]
   def initialize(path)
     @path = path
+    
+    # TODO: Add support for SVN date format
+    if @path =~ /^(\d+)|HEAD|BASE|COMMITTED|PREV\:/
+      parts = path.split(":",2)
+      svn_path = parts.pop
+      rev = parts.shift
+    else
+      svn_path = @path
+      rev = nil
+    end
+    
+    @svn_options = (rev ? "-r #{rev} " : " ")+svn_path
+    
     @file_pattern = "**/*.rb"
 
     @files = []
-    svn("ls -R #{@path}").each_line do |file|
+    
+    svn("ls -R #{@svn_options}").each_line do |file|
       file.chomp!
       @files << file if File.fnmatch(@file_pattern, file)
     end
@@ -25,7 +39,7 @@ class SVNFeeder
     
   def each
     @files.each do |file|
-      cat_path = File.join(@path, file)
+      cat_path = File.join(@svn_options, file)
       yield(svn("cat #{cat_path}"), file)
     end
   end
