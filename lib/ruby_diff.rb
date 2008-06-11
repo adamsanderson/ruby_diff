@@ -15,6 +15,6 @@ module RubyDiff
 end
 
 # RubyDiff
-%w(code_comparison structure_processor file_feeder git_support git_feeder git_working_dir_feeder).each do |name|
+%w(code_comparison structure_processor file_feeder git_support git_feeder git_working_dir_feeder svn_feeder).each do |name|
   require File.expand_path(File.dirname(__FILE__) + "/ruby_diff/#{name}")
 end

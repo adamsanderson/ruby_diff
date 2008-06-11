@@ -21,6 +21,7 @@ feeder_mapping = {
   :file =>  FileFeeder,
   :git  =>  GitFeeder,
   :git_wd  =>  GitWorkingDirFeeder,
+  :svn  =>  SVNFeeder
 }
 
 feeders = []
@@ -56,6 +57,10 @@ opts.on('--git PATH', "Use a git repository as a code source"){|path|
 
 opts.on('--git-wd PATH', "Use the git working directory as a code source"){|path| 
   feeders << feeder_mapping[:git_wd].new(path) 
+}
+
+opts.on('--svn PATH', "Use a svn repository as a code source"){|path| 
+  feeders << feeder_mapping[:svn].new(path)
 }
 
 opts.on('--file PATH', "Use a file system path as a code source"){|path| 
