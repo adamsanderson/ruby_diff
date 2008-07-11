@@ -12,6 +12,7 @@ lib/ruby_diff/git_support.rb
 lib/ruby_diff/git_working_dir_feeder.rb
 lib/ruby_diff/patterns.rb
 lib/ruby_diff/structure_processor.rb
+lib/ruby_diff/svn_feeder.rb
 ruby_diff.gemspec
 test/code_comparison_test.rb
 test/file_feeder_test.rb

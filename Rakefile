@@ -30,7 +30,7 @@ namespace :git do
    
   desc "Updates the manifest to match the git repository"
   task :update_manifest do |t|
-    `git-ls-files > Manifest.txt`
+    `git ls-files > Manifest.txt`
   end
   
   desc "Pushes git repository out"
