@@ -95,13 +95,38 @@ class StructureProcessorTestCase < Test::Unit::TestCase
     CODE
   end
   
+  def test_namespaced_class
+    assert_signatures <<-CODE, ["C::B::A"], [ClassCode]
+    class C::B::A
+    end
+    CODE
+  end
+  
+  def test_namespaced_module
+    assert_signatures <<-CODE, ["C", "C::B", "C::B::A"], [ModuleCode]
+    module C::B::A
+    end
+    CODE
+  end
+  
+  # Lets just be nuts...
+  def test_nested_namespaced_class
+    assert_signatures <<-CODE, ["C", "C::B", "C::B::A", "C::B::A::D"], [ModuleCode, ClassCode]
+    module C::B::A
+      class D
+      end
+    end
+    CODE
+  end
+  
   def assert_signatures(code, signatures, types=[MethodCode])
     sexp = ParseTree.new.parse_tree_for_string(code)
+    serialized = sexp.pretty_inspect
     processor = StructureProcessor.new()
     processor.process(* sexp)
     
     found_signatures = processor.code_objects.values.select{|co| types.include?(co.class)}.map{|key| key.signature }.sort
-    assert_equal signatures.sort, found_signatures
+    assert_equal signatures.sort, found_signatures, "Sexp was:\n#{serialized}"
   end
   
 end

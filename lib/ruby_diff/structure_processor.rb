@@ -127,7 +127,9 @@ class StructureProcessor < SexpProcessor
     super_class = exp.shift
     body = exp.shift
     
-    record ClassCode.new(name, self.scope, body) do
+    name, temp_scope = process_colon2_constants(name) if name.is_a? Array
+    
+    record ClassCode.new(name, temp_scope || self.scope, body) do
       s(:class, name, process(super_class), process(body))
     end
   end
@@ -136,7 +138,9 @@ class StructureProcessor < SexpProcessor
     name = exp.shift
     body = exp.shift
     
-    record ModuleCode.new(name, self.scope, body) do
+    name, temp_scope = process_colon2_constants(name) if name.is_a? Array
+    
+    record ModuleCode.new(name, temp_scope || self.scope, body) do
       s(:class, name, process(body))
     end
   end
@@ -186,6 +190,22 @@ class StructureProcessor < SexpProcessor
   end
   
   protected
+  # If the class is defined as: A::B::C, then get the constants and register them.
+  # This is rather a dirty piece of code.  Fear it.
+  def process_colon2_constants(array)
+    array = array.flatten
+    constants = array[array.length/-2..-1]
+    name = constants.pop
+    
+    parent = self.scope
+    
+    constants.each do |c|
+      parent = record ModuleCode.new(c, parent, Sexp.new)
+    end
+        
+    [name,parent]
+  end
+  
   def record obj
     signature = obj.signature
     if !self.code_objects[signature]
@@ -196,7 +216,7 @@ class StructureProcessor < SexpProcessor
     self.scope_stack << self.code_objects[signature]
     result = yield if block_given?
     self.scope_stack.pop
-    result
+    result || obj
   end
   
   def scope
