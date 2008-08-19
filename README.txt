@@ -39,6 +39,6 @@ For subversion repositories
 
 See help for more information.
 
-== Contact
+== Contact 
 Feel free to get in touch with me:
   netghost@gmail.com
