@@ -11,7 +11,7 @@ HOE = Hoe.new('ruby_diff', RubyDiff::VERSION) do |p|
   p.remote_rdoc_dir = '' # Release to root
   p.test_globs = ['test/*_test.rb']
   p.summary = "a higher level diff application for analyzing changes to ruby code"
-  p.extra_deps << ['ParseTree', '~> 2.1']
+  p.extra_deps << ['ParseTree', '~> 3.0']
 end
 SPEC = HOE.spec
 

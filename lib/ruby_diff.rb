@@ -11,7 +11,7 @@ require 'set'
 require 'pp'
 
 module RubyDiff
-  VERSION = "0.2"
+  VERSION = "0.2.1"
 end
 
 # RubyDiff
